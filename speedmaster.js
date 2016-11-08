@@ -27,11 +27,12 @@ function drawClock() {
   drawFace(ctx, radius);
   // drawNumbers(ctx, radius,12,0.15,font,0.75);
   // drawNumbers(ctx, radius,60,0.05,font,0.65);
+  // loop();
   drawLogo("Ω","Helvetica",0.7,0.20);
   drawLogo("Omega","Helvetica",0.55,0.15);
   drawLogo("Speedmaster","Times New Roman",0.45,0.10);
   drawLogo("Professional","Helvetica",0.35,0.10);
-  drawPic("","",-0.4,0);
+  // drawPic("","",-0.4,0);
   drawTime(ctx, radius);
   // drawDate(ctx, 0.15,radius * 0.5,0,font);
   drawBatons(ctx, radius,0,0,12,radius*0.04,radius*0.20)
@@ -55,7 +56,11 @@ function drawClock() {
   drawCustomNumbers(ctx,radius,-radius*0.5,0,radius*0.2,numbers2,60);
   drawCustomNumbers(ctx,radius,0,radius*0.5,radius*0.2,numbers3,12);
   drawCustomNumbers(ctx,radius,radius*0.5,0,radius*0.2,numbers4,30);
+  
 }
+
+
+
 
 function drawFace(ctx, radius) {
   var strapwidth = radius*1.1;
@@ -333,22 +338,26 @@ function drawPic(text,font,location,px) {
   ctx.drawImage(base_image, -base_image.width*scale/2-400, -location-base_image.height*scale/2, base_image.width*scale, base_image.height*scale);
 }
 
-function drawTime(ctx, radius) {
+
+function drawTime(ctx, radius,timeElapsed) {
+  var start = new Date();
   var now = new Date();
   var hour = now.getHours();
   var minute = now.getMinutes();
   var second = now.getSeconds();
   var millisecond = now.getMilliseconds();
+  var chronograph = second-start.getSeconds();
   hour = hour % 12;
   hour = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
   minute = (minute * Math.PI / 30) + ((second) * Math.PI / (30 * 60));
   second = ((second + (millisecond / 1000)) * Math.PI / 30);
   millisecond = (millisecond * Math.PI / 500);
-  
+  chronograph = chronograph * Math.PI / 30;
+
   //mainaxis
   drawHand(ctx, hour, radius * 0.65, radius * 0.04,0,0,flatswordHand);
   drawHand(ctx, minute, radius * 1, radius * 0.04,0,0,flatswordHand);
-  drawHand(ctx, Math.PI*2, radius * 1, radius * 0.04,0,0,grandeSeconde);
+  drawHand(ctx, chronograph, radius * 1, radius * 0.04,0,0,diamondHand);
   //drawHand(ctx, second, radius * 1, radius * 0.02,0,0,grandeSeconde);
   
   //6 o clock subdial
@@ -357,7 +366,9 @@ function drawTime(ctx, radius) {
   drawHand(ctx, second, radius * 0.3, radius * 0.02,-radius*0.5, 0,flatswordHand);
   //9 o clock subdial
   //drawHand(ctx, second, radius * 0.2, radius * 0.01,-radius*.4, 0,grandeSeconde);
+  
 }
+
 
 function drawHand(ctx, pos, length, width,x,y,handshape) {
   ctx.lineWidth = radius*0.01;
@@ -385,6 +396,29 @@ function grandeSeconde(ctx, pos, length, width) {
   ctx.fill();
 }
 
+function diamondHand(ctx, pos, length, width) {
+  var dx = 0.13
+  var diamondy1 = 0.65
+  var diamondy2 = 0.7
+  var diamondy3 = 0.83
+  ctx.beginPath();
+  ctx.moveTo(0,-length);
+  ctx.lineTo(width*0.2,-length);
+  ctx.lineTo(width/2,length/4);
+  ctx.lineTo(-width/2,length/4);
+  ctx.lineTo(-width*0.2,-length);
+  ctx.fill();
+  ctx.closePath();
+  ctx.beginPath();
+  ctx.moveTo(0,-length*diamondy1);
+  ctx.lineTo(width*10*dx,-length*diamondy2)
+  ctx.lineTo(0,-length*diamondy3)
+  ctx.lineTo(-width*10*dx,-length*diamondy2)
+  ctx.lineTo(0,-length*diamondy1)
+  ctx.fill();
+  ctx.closePath();
+}
+
 function flatswordHand(ctx, pos, length, width) {
   length2 = length*0.95
   ctx.rect(-width/2, 0, width, -length2);
@@ -405,6 +439,9 @@ function feuille(ctx, pos, length, width) {
   ctx.bezierCurveTo(-width/2,-length/5,-width/2,-length/3,0,-length);
   ctx.fill();
 }
+
+
+
 
 }
 
